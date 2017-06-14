@@ -1,0 +1,62 @@
+version: '2'
+
+services:
+  apache:
+    build: app/docker/apache
+    container_name: capistranoui_apache
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - php
+    volumes_from:
+      - sync
+    environment:
+      - DEV_UID
+      - DEV_GID
+    working_dir: /var/www
+
+  php:
+    build: app/docker/php
+    container_name: capistranoui_php
+    expose:
+      - 9000
+    ports:
+      - "8000:8000"
+      - "4200:4200"
+    depends_on:
+      - mysql
+    environment:
+      - SYMFONY_ENV=dev
+      - SYMFONY_DEBUG=1
+      - DEV_UID
+      - DEV_GID
+    volumes_from:
+      - sync
+    working_dir: /var/www
+
+  mysql:
+    image: mysql:5.7
+    container_name: capistranoui_mysql
+    volumes:
+      - ./app/docker/mysql/data:/var/lib/mysql
+      - ./app/docker/mysql/conf.d/config-file.cnf:/etc/mysql/conf.d/config-file.cnf
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=capistranoui
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+
+  sync:
+    build: app/docker/sync
+    container_name: capistranoui_sync
+    environment:
+    - DEV_UID
+    - DEV_GID
+    volumes:
+    - /var/www
+    ports:
+    - "10022:22"
+    working_dir: /var/www
+    stdin_open: true
+    tty: true
