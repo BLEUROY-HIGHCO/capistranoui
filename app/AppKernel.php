@@ -74,6 +74,8 @@ class AppKernel extends Kernel
     protected function loadThirdPartyBundles()
     {
         $bundles             = [
+            new FOS\UserBundle\FOSUserBundle(),
+            new Vich\UploaderBundle\VichUploaderBundle(),
         ];
         $this->loadedBundles = array_merge($this->loadedBundles, $bundles);
     }

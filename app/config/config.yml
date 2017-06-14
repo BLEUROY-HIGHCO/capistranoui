@@ -67,3 +67,20 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: AppBundle\Entity\User
+    from_email:
+        address:        noreply@example.com
+        sender_name:    Demo App
+
+vich_uploader:
+    db_driver: orm
+    mappings:
+        project_image:
+            uri_prefix:         /images/projects
+            upload_destination: '%kernel.root_dir%/../web/images/projects'
+            delete_on_remove: true
+            delete_on_update: true
