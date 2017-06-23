@@ -16,3 +16,4 @@
 /vendor/
 /web/bundles/
 /app/docker/mysql/data
+/app/docker/php/capistrano/*/log

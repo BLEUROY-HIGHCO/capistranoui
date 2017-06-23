@@ -32,6 +32,10 @@ RUN apt-get install -y --allow-unauthenticated php7.1-zip php7.1-dom
 RUN apt-get install -y bc
 RUN apt-get install -y unzip
 RUN apt-get install -y wget
+RUN apt-get install -y ruby git
+RUN gem install capistrano
+RUN chmod o+w -R /var/lib/gems
+RUN chmod o+w -R /usr/local/bin
 
 RUN mkdir -p /var/www
 RUN mkdir -p /var/log/phpfpm && chown www-data:www-data /var/log/phpfpm

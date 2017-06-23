@@ -26,11 +26,14 @@ services:
       - "4200:4200"
     depends_on:
       - mysql
+      - deploy
     environment:
       - SYMFONY_ENV=dev
       - SYMFONY_DEBUG=1
       - DEV_UID
       - DEV_GID
+    volumes:
+      - ./app/docker/php/capistrano:/var/capistrano
     volumes_from:
       - sync
     working_dir: /var/www
@@ -57,6 +60,18 @@ services:
     - /var/www
     ports:
     - "10022:22"
+    working_dir: /var/www
+    stdin_open: true
+    tty: true
+
+  deploy:
+    build: app/docker/deploy
+    container_name: capistranoui_deploy
+    environment:
+      - DEV_UID
+      - DEV_GID
+    volumes:
+      - /var/www
     working_dir: /var/www
     stdin_open: true
     tty: true
