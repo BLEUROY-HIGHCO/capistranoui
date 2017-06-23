@@ -52,6 +52,9 @@ composer-install:
 
 npm-install:
 	$(PHP_CLI) bash -c "yarn install"
+	docker cp $(CONTAINER_PHP):/var/www/node_modules/. node_modules
+	docker cp $(CONTAINER_PHP):/var/www/yarn.lock yarn.lock
+	docker cp $(CONTAINER_PHP):/var/www/package.json package.json
 
 watch:
 	$(PHP_CLI) /usr/local/bin/watch.sh &

@@ -1,0 +1,33 @@
+{% extends 'AppBundle::base.html.twig' %}
+
+{% block body %}
+    <h2>{{ environment.project.name }} {{ environment.project.name != environment.project.folder ? '(' ~ environment.project.folder ~ ')' }} - {{ environment.name | capitalize }}</h2>
+    <a href="{{ environment.githubUrl }}" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
+
+    <div class="row">
+        <div id="githubLastCommit" class="col-md-6 col-sm-12">
+            {{ render(controller('AppBundle:Environment:githubLastCommit', { 'id': environment.id })) }}
+        </div>
+        <div class="col-md-6 col-sm-12">
+            {{ render(controller('AppBundle:Environment:currentVersion', { 'id': environment.id })) }}
+        </div>
+        <div id="githubBranchCommits" class="col-md-12 col-sm-12">
+            {{ render(controller('AppBundle:Environment:githubBranchCommits', { 'id': environment.id })) }}
+        </div>
+
+        <div class="col-sm-12">
+            <textarea id="socket-content" rows="12" readonly="readonly" style="width: 100%"></textarea>
+        </div>
+
+        {{ include('AppBundle:Environment:versionHistory.html.twig') }}
+        {{ form(form) }}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        const environmentId = '{{ environment.id }}';
+    </script>
+    <script src="{{ asset('build/environment.js') }}"></script>
+{% endblock %}

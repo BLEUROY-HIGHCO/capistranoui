@@ -76,6 +76,8 @@ class AppKernel extends Kernel
         $bundles             = [
             new FOS\UserBundle\FOSUserBundle(),
             new Vich\UploaderBundle\VichUploaderBundle(),
+            new EightPoints\Bundle\GuzzleBundle\GuzzleBundle(),
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
         ];
         $this->loadedBundles = array_merge($this->loadedBundles, $bundles);
     }

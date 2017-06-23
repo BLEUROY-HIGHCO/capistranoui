@@ -31,6 +31,12 @@ class Version
     protected $commit;
 
     /**
+     * @var string
+     * @ORM\Column(type="string", length=50)
+     */
+    protected $branch;
+
+    /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -56,6 +62,13 @@ class Version
      */
     protected $rolledBackBy;
 
+    /**
+     * @var Environment
+     * @ORM\ManyToOne(targetEntity="Environment", inversedBy="versions")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    protected $environment;
+
 
     //</editor-fold>
 
@@ -63,7 +76,7 @@ class Version
     /**
      * @return mixed
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -85,6 +98,14 @@ class Version
     }
 
     /**
+     * @return string
+     */
+    public function getBranch(): string
+    {
+        return $this->branch;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getDeployedAt(): ?\DateTime
@@ -93,7 +114,7 @@ class Version
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getRolledBackAt(): ?\DateTime
     {
@@ -114,6 +135,14 @@ class Version
     public function getRolledBackBy(): ?User
     {
         return $this->rolledBackBy;
+    }
+
+    /**
+     * @return Environment
+     */
+    public function getEnvironment(): ?Environment
+    {
+        return $this->environment;
     }
     //</editor-fold>
 
@@ -138,6 +167,18 @@ class Version
     public function setCommit(string $commit): Version
     {
         $this->commit = $commit;
+
+        return $this;
+    }
+
+    /**
+     * @param string $branch
+     *
+     * @return Version
+     */
+    public function setBranch(string $branch): Version
+    {
+        $this->branch = $branch;
 
         return $this;
     }
@@ -189,5 +230,27 @@ class Version
 
         return $this;
     }
+
+    /**
+     * @param Environment $environment
+     *
+     * @return Version
+     */
+    public function setEnvironment(Environment $environment): Version
+    {
+        $this->environment = $environment;
+
+        return $this;
+    }
     //</editor-fold>
+
+    public function __toString()
+    {
+        return $this->number;
+    }
+
+    public function getCommitUrl()
+    {
+        return sprintf('https://github.com/%s/%s/commit/%s', $this->environment->getProject()->getGithubOwner(), $this->environment->getProject()->getGithubProject(), $this->commit);
+    }
 }

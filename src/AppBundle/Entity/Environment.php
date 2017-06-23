@@ -27,10 +27,10 @@ class Environment
     protected $name;
 
     /**
-     * @var string
-     * @ORM\Column(type="string", length=50)
+     * @var Version
+     * @ORM\ManyToOne(targetEntity="Version", cascade={"persist", "remove"})
      */
-    protected $version;
+    protected $currentVersion;
 
     /**
      * @var int
@@ -39,9 +39,21 @@ class Environment
     protected $keepReleases;
 
     /**
+     * @var string
+     * @ORM\Column(type="string", length=50)
+     */
+    protected $defaultBranch;
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean")
+     */
+    protected $branchSelectable;
+
+    /**
      * @var Project
      * @ORM\ManyToOne(targetEntity="Project", inversedBy="environments", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      */
     protected $project;
 
@@ -51,6 +63,12 @@ class Environment
      * @ORM\JoinTable(name="users_environments")
      */
     protected $users;
+
+    /**
+     * @var Version[]|Collection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Version", mappedBy="environment")
+     */
+    protected $versions;
 
     //</editor-fold>
 
@@ -72,41 +90,65 @@ class Environment
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @return string
+     * @return Version|null
      */
-    public function getVersion(): string
+    public function getCurrentVersion(): ?Version
     {
-        return $this->version;
+        return $this->currentVersion;
     }
 
     /**
      * @return int
      */
-    public function getKeepReleases(): int
+    public function getKeepReleases(): ?int
     {
         return $this->keepReleases;
     }
 
     /**
-     * @return Project
+     * @return string
      */
-    public function getProject(): Project
+    public function getDefaultBranch(): ?string
+    {
+        return $this->defaultBranch;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBranchSelectable(): ?bool
+    {
+        return $this->branchSelectable;
+    }
+
+    /**
+     * @return Project|null
+     */
+    public function getProject(): ?Project
     {
         return $this->project;
     }
 
     /**
-     * @return User[]
+     * @return User[]|Collection
      */
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * @return Version[]|Collection
+     */
+    public function getVersions()
+    {
+        return $this->versions;
     }
     //</editor-fold>
 
@@ -128,9 +170,9 @@ class Environment
      *
      * @return Environment
      */
-    public function setVersion(string $version): Environment
+    public function setCurrentVersion(string $version): Environment
     {
-        $this->version = $version;
+        $this->currentVersion = $version;
 
         return $this;
     }
@@ -143,6 +185,30 @@ class Environment
     public function setKeepReleases(int $keepReleases): Environment
     {
         $this->keepReleases = $keepReleases;
+
+        return $this;
+    }
+
+    /**
+     * @param string $defaultBranch
+     *
+     * @return Environment
+     */
+    public function setDefaultBranch(string $defaultBranch): Environment
+    {
+        $this->defaultBranch = $defaultBranch;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $branchSelectable
+     *
+     * @return Environment
+     */
+    public function setBranchSelectable(bool $branchSelectable): Environment
+    {
+        $this->branchSelectable = $branchSelectable;
 
         return $this;
     }
@@ -177,5 +243,55 @@ class Environment
 
         return $this;
     }
+
+    public function addVersion(Version $version)
+    {
+        if (!$this->versions->contains($version)) {
+            $this->versions->add($version);
+            $version->setEnvironment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVersion(Version $version)
+    {
+        if ($this->versions->removeElement($version)) {
+            $version->setEnvironment(null);
+        }
+
+        return $this;
+    }
+
     //</editor-fold>
+
+    /**
+     * @param Environment $environment
+     *
+     * @return self
+     */
+    public function mergeUneditableProperties(Environment $environment): self
+    {
+        $this->keepReleases = $environment->getKeepReleases();
+        $this->branchSelectable = $environment->isBranchSelectable();
+        $this->defaultBranch = $environment->getDefaultBranch();
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGithubUrl()
+    {
+        return sprintf('%s/tree/%s', $this->project->getGithubUrl(), $this->defaultBranch);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getBranchToDeploy()
+    {
+        return $this->currentVersion && $this->currentVersion->getBranch() ?  $this->currentVersion->getBranch() : $this->getDefaultBranch();
+    }
 }

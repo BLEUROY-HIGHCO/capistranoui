@@ -17,3 +17,11 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
+
+    rootPath: '/var/capistrano'
+
+    github_token: ThisTokenIsNotSoSecretChangeIt
+
+    socket_host: 127.0.0.1
+    socket_port: 8080
+    socket_timeout: 5

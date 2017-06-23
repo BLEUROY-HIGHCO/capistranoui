@@ -1,0 +1,11 @@
+{% extends 'AppBundle::base.html.twig' %}
+
+{% block body %}
+    <ul>
+        {% for folder in folders %}
+            <li>
+                <a href="{{ path('project_new',{'folder': folder}) }}">{{ folder }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

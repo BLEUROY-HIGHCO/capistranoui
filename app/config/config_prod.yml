@@ -20,3 +20,7 @@ monolog:
         console:
             type: console
             process_psr_3_messages: false
+        capistrano:
+            type: service
+            id: AppBundle\Log\Handler\FlushableStreamHandler
+            channels: ['capistrano']

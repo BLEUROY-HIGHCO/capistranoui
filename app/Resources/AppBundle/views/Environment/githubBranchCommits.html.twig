@@ -1,0 +1,12 @@
+<div class="card">
+    <h4 class="card-title">Commits</h4>
+    <ul class="list-group list-group-flush">
+        {% for commit in commits %}
+            <li class="list-group-item">
+                <span style="padding: 10px">ID: <a href="{{ commit.html_url }}" target="_blank">{{ commit.sha }}</a></span>
+                <span style="padding: 10px">By: {{ commit.commit.author.name }}</span>
+                <span style="padding: 10px">At: {{ commit.commit.author.date | date }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

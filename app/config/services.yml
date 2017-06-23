@@ -29,7 +29,38 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-    # add more services, or override services that need manual wiring
-    # AppBundle\Service\ExampleService:
-    #     arguments:
-    #         $someArgument: 'some_value'
+    AppBundle\Service\CapistranoFinder:
+        public: true
+        arguments:
+           - '@doctrine.orm.entity_manager'
+           - '%rootpath%'
+
+    AppBundle\Security\Voter\DeployVoter:
+        tags:
+            - security.voter
+
+    AppBundle\Github\ApiClient:
+        public: true
+        arguments:
+            - '@guzzle.client.api_github'
+
+    AppBundle\Log\Handler\FlushableStreamHandler:
+        arguments:
+            - '%kernel.logs_dir%/%kernel.environment%/capistrano'
+
+    AppBundle\Socket\Socket:
+        public: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@validator'
+            - '%rootpath%'
+            - '@logger'
+        tags:
+            - { name: monolog.logger, channel: capistrano }
+
+    AppBundle\Socket\Sender:
+        public: true
+        arguments:
+            - '%socket_host%'
+            - '%socket_port%'
+            - '%socket_timeout%'

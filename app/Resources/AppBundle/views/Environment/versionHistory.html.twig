@@ -1,0 +1,18 @@
+<div class="col-md-12 col-sm-12">
+    <div class="card">
+        <h4 class="card-title">History</h4>
+        <ul class="list-group list-group-flush">
+        {% for version in environment.versions|slice(0, environment.keepReleases*2) %}
+            <li class="list-group-item">
+                <span style="padding: 10px">Number: {{ version.number }}</span>
+                <span style="padding: 10px">Commit: <a href="{{ version.commitUrl }}" target="_blank">{{ version.commit }}</a></span>
+                <span style="padding: 10px">By: {{ version.deployedBy.username }}</span>
+                <span style="padding: 10px">At: {{ version.deployedAt | date }}</span>
+                {% if loop.index < environment.keepReleases and version.rolledbackAt is null %}
+                    <span style="padding: 10px"><button class="btn btn-sm btn-danger" title="Rollback"><i class="fa fa-backward" aria-hidden="true"></i></button></span>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>

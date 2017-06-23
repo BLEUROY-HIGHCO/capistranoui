@@ -1,0 +1,15 @@
+{% extends 'AppBundle::base.html.twig' %}
+
+{% block body %}
+    <h2>{{ project.name }} {{ project.name != project.folder ? '(' ~ project.folder ~ ')' }}</h2>
+    <a href="{{ project.githubUrl }}" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
+    {% if is_granted("ROLE_ADMIN") %}
+        <a class="btn btn-sm btn-primary" href="{{ path('project_edit', { 'id': project.id }) }}">Edit</a>
+    {% endif %}
+
+    <div class="row">
+        {% for environment in project.environments %}
+            {{ include('@App/Environment/card.html.twig', {'environment': environment}) }}
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,9 @@
+<div class="card">
+    <div class="card-block">
+        <h4 class="card-title">Github</h4>
+        <p class="card-text">ID: <a href="{{ commit.commit.html_url }}" target="_blank" class="card-link">{{ commit.commit.sha }}</a></p>
+        <p class="card-text">{{ commit.commit.commit.message }}</p>
+        <p class="card-text">By {{ commit.commit.commit.author.name }}</p>
+        <p class="card-text">At {{ commit.commit.commit.author.date | date }}</p>
+    </div>
+</div>

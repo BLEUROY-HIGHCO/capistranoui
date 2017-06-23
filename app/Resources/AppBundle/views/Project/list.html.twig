@@ -1,0 +1,9 @@
+<ul class="list-group">
+{% for project in projects %}
+    <li class="list-group-item {{ currentProject is not empty and currentProject.id == project.id ? 'active' : '' }}">
+        <a href="{{ path('project_show', { 'id': project.id }) }}">{{ project }}</a>
+    </li>
+{% endfor %}
+</ul>
+
+<a href="{{ path('project_select_folder') }}" class="btn btn-primary btn-sm">New project</a>

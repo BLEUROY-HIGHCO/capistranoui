@@ -1,0 +1,30 @@
+<div class="col-md-6 col-xs-12">
+    <div class="card">
+        <div class="card-block">
+            <img class="card-img-top" src="https://dummyimage.com/600x300/ccc/fff.png&text={{ environment.name | capitalize }}" alt="{{ environment.name }}" />
+            <h4 class="card-title">Branch : {{ environment.defaultBranch }}</h4>
+            <p class="card-text">
+                {% if environment.currentVersion %}
+                {{ environment.currentVersion.number  }}<br/>
+                {{ environment.currentVersion.commit  }}<br/>
+                    {% if environment.currentVersion.deployedAt and environment.currentVersion.deployedBy  %}
+                        Deployed at {{ environment.currentVersion.deployedAt | date('d/m à H:i') }} by {{ environment.currentVersion.deployedBy.username }}<br/>
+                    {% endif %}
+                    {% if environment.currentVersion.rolledBackAt and environment.currentVersion.rolledBackBy  %}
+                        Rolled back at {{ environment.currentVersion.rolledBackAt | date('d/m à H:i') }} by {{ environment.currentVersion.rolledBackBy.username }}<br/>
+                    {% endif %}
+                {% endif %}
+                {% if is_granted('deploy', environment) %}
+                    <div class="badge badge-success">
+                        <span class="fa fa-check"></span>
+                    </div>
+                {% else %}
+                    <div class="badge badge-danger">
+                        <span class="fa fa-times"></span>
+                    </div>
+                {% endif %}
+            </p>
+            <a href="{{ path('environment_show', { 'id': environment.id }) }}" class="btn btn-primary">View</a>
+        </div>
+    </div>
+</div>

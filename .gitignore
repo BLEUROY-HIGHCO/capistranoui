@@ -17,3 +17,5 @@
 /web/bundles/
 /app/docker/mysql/data
 /app/docker/php/capistrano/*/log
+/node_modules
+/web/images/projects/*
