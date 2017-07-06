@@ -2,22 +2,20 @@ import $ from 'jquery';
 
 class Socket {
   constructor() {
-    this.connection = new WebSocket('ws://capistranoui.docker:4200');
+    this.connection = new WebSocket(`ws://${socketPath}`);
     this.logger = $('#socket-content');
 
     this.connection.onopen = e => {
       this.subscribe();
-      console.info("Connection established succesfully");
+      console.info("Connection established succesfully.");
     };
 
     this.connection.onmessage = e => {
       this.appendMessage(e.data);
-
-      console.log(e.data);
     };
 
-    this.connection.onerror = function(e){
-      alert("Error: something went wrong with the socket.");
+    this.connection.onerror = e => {
+      this.appendMessage("<div>An error occurred while connecting to socket.</div>");
       console.error(e);
     };
   }

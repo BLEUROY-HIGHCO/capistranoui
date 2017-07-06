@@ -1,5 +1,9 @@
 {% extends 'AppBundle::base.html.twig' %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('build/show.css') }}">
+{% endblock %}
+
 {% block body %}
     <h2>{{ environment.project.name }} {{ environment.project.name != environment.project.folder ? '(' ~ environment.project.folder ~ ')' }} - {{ environment.name | capitalize }}</h2>
     <a href="{{ environment.githubUrl }}" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
@@ -16,7 +20,7 @@
         </div>
 
         <div class="col-sm-12">
-            <textarea id="socket-content" rows="12" readonly="readonly" style="width: 100%"></textarea>
+            <div id="socket-content"></div>
         </div>
 
         {{ include('AppBundle:Environment:versionHistory.html.twig') }}
@@ -27,6 +31,7 @@
 
 {% block javascripts %}
     <script>
+        const socketPath = '{{ socket_path }}';
         const environmentId = '{{ environment.id }}';
     </script>
     <script src="{{ asset('build/environment.js') }}"></script>

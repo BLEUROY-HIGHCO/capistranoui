@@ -6,7 +6,7 @@ class Sender
 {
     protected $socket;
 
-    protected $host;
+    protected $host = '127.0.0.1';
 
     protected $port;
 
@@ -15,13 +15,11 @@ class Sender
     /**
      * Sender constructor.
      *
-     * @param string $host
-     * @param int    $port
-     * @param int    $timeout
+     * @param int $port
+     * @param int $timeout
      */
-    public function __construct(string $host, int $port, int $timeout)
+    public function __construct(int $port, int $timeout)
     {
-        $this->host    = $host;
         $this->port    = $port;
         $this->timeout = $timeout;
     }

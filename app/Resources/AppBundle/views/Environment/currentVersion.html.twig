@@ -4,13 +4,8 @@
         {% if version is not null %}
             <p class="card-text">ID: <a href="{{ version.commitUrl }}" target="_blank">{{ version.commit }}</a></p>
             <p class="card-text">Number: {{ version.number }}</p>
-            {% if version.deployedBy is not null %}
-                <p class="card-text">By {{ version.deployedBy.username }}</p>
-                <p class="card-text">At {{ version.deployedAt | date }}</p>
-            {% elseif version.rolledBackBy is not null %}
-                <p class="card-text">By {{ version.rolledBackBy.username }}</p>
-                <p class="card-text">At {{ version.rolledBackAt | date }}</p>
-            {% endif %}
+            <p class="card-text">By {{ version.deployedBy.username }}</p>
+            <p class="card-text">At {{ version.deployedAt | date }}</p>
             <p class="card-text">Branch: {{ version.branch }}</p>
         {% else %}
             <p class="card-text">There is no current version.</p>

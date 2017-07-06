@@ -16,37 +16,31 @@ class Message implements GroupSequenceProviderInterface
     /**
      * @var string
      * @Assert\NotBlank(groups={"Message"})
-     * @Assert\Choice({"subscribe", "deploy", "rollback"})
+     * @Assert\Choice({"subscribe", "broadcast"})
      */
     protected $action;
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"deploy", "rollback"})
+     * @Assert\NotBlank(groups={"broadcast"})
      */
-    protected $username;
+    protected $message;
 
     /**
-     * @var int
-     * @Assert\NotBlank(groups={"deploy", "subscribe"})
+     * @var string
+     * @Assert\NotBlank(groups={"subscribe", "broadcast"})
      */
     protected $envId;
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"deploy"})
+     * @Assert\NotBlank(groups={"broadcast"})
      */
-    protected $branch;
-
-    /**
-     * @var int
-     * @Assert\NotBlank(groups={"rollback"})
-     */
-    protected $versionId;
+    protected $logType;
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"deploy", "rollback"})
+     * @Assert\NotBlank(groups={"broadcast"})
      */
     protected $token;
     //</editor-fold>
@@ -63,15 +57,15 @@ class Message implements GroupSequenceProviderInterface
     /**
      * @return string
      */
-    public function getUsername(): ?string
+    public function getMessage(): ?string
     {
-        return $this->username;
+        return $this->message;
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getEnvId(): ?int
+    public function getEnvId(): ?string
     {
         return $this->envId;
     }
@@ -79,17 +73,9 @@ class Message implements GroupSequenceProviderInterface
     /**
      * @return string
      */
-    public function getBranch(): ?string
+    public function getLogType(): ?string
     {
-        return $this->branch;
-    }
-
-    /**
-     * @return int
-     */
-    public function getVersionId(): ?int
-    {
-        return $this->versionId;
+        return $this->logType;
     }
 
     /**
@@ -115,23 +101,11 @@ class Message implements GroupSequenceProviderInterface
     }
 
     /**
-     * @param string $username
+     * @param string $envId
      *
      * @return Message
      */
-    public function setUsername(?string $username): Message
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * @param int $envId
-     *
-     * @return Message
-     */
-    public function setEnvId(?int $envId): Message
+    public function setEnvId(string $envId): Message
     {
         $this->envId = $envId;
 
@@ -139,25 +113,25 @@ class Message implements GroupSequenceProviderInterface
     }
 
     /**
-     * @param string $branch
+     * @param string $message
      *
      * @return Message
      */
-    public function setBranch(?string $branch): Message
+    public function setMessage(?string $message): Message
     {
-        $this->branch = $branch;
+        $this->message = $message;
 
         return $this;
     }
 
     /**
-     * @param int $versionId
+     * @param string $logType
      *
      * @return Message
      */
-    public function setVersionId(?int $versionId): Message
+    public function setLogType(string $logType): Message
     {
-        $this->versionId = $versionId;
+        $this->logType = $logType;
 
         return $this;
     }
@@ -183,7 +157,7 @@ class Message implements GroupSequenceProviderInterface
      */
     public function getGroupSequence()
     {
-        $groups = ['Message'];
+        $groups   = ['Message'];
         $groups[] = $this->action;
 
         return $groups;

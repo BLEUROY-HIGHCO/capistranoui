@@ -166,11 +166,11 @@ class Environment
     }
 
     /**
-     * @param string $version
+     * @param Version $version
      *
      * @return Environment
      */
-    public function setCurrentVersion(string $version): Environment
+    public function setCurrentVersion(Version $version): Environment
     {
         $this->currentVersion = $version;
 

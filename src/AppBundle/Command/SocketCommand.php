@@ -32,7 +32,8 @@ class SocketCommand extends ContainerAwareCommand
                     $this->getContainer()->get(Socket::class)
                 )
             ),
-            $this->getContainer()->getParameter('socket_port')
+            $this->getContainer()->getParameter('socket_server_port'),
+            $this->getContainer()->getParameter('socket_server_host')
         );
 
         $server->run();

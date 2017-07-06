@@ -33,7 +33,7 @@ services:
         public: true
         arguments:
            - '@doctrine.orm.entity_manager'
-           - '%rootpath%'
+           - '%capistrano_path%'
 
     AppBundle\Security\Voter\DeployVoter:
         tags:
@@ -53,14 +53,26 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@validator'
-            - '%rootpath%'
             - '@logger'
+            - '@templating'
+            - '%capistrano_path%'
+            - '%capistrano_bin%'
         tags:
             - { name: monolog.logger, channel: capistrano }
 
     AppBundle\Socket\Sender:
         public: true
         arguments:
-            - '%socket_host%'
-            - '%socket_port%'
+            - '%socket_server_port%'
             - '%socket_timeout%'
+
+    AppBundle\EventListener\TerminateListener:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@security.token_storage'
+            - '@serializer'
+            - '@AppBundle\Socket\Sender'
+            - '%capistrano_path%'
+            - '%capistrano_bin%'
+        tags:
+            - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }

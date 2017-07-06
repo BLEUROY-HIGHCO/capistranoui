@@ -32,9 +32,8 @@ RUN apt-get install -y --allow-unauthenticated php7.1-zip php7.1-dom
 RUN apt-get install -y bc
 RUN apt-get install -y unzip
 RUN apt-get install -y wget
-RUN apt-get install -y gem
 RUN apt-get install -y ruby git
-RUN gem install capistrano
+RUN gem install bundler
 RUN chmod o+w -R /var/lib/gems
 RUN chmod o+w -R /usr/local/bin
 
@@ -80,6 +79,15 @@ ENV SYMFONY_ENV=dev
 ENV SYMFONY_DEBUG=1
 
 EXPOSE 9000
+
+ADD deploy-keys /var/deploy-keys
+RUN chown -R www-data:www-data /var/deploy-keys
+
+ADD deploy-keys /var/deploy-keys
+RUN chown -R www-data:www-data /var/deploy-keys
+
+RUN bundle config github.https true
+RUN bundle config git.allow_insecure true
 
 ADD wait-for-it.sh /usr/local/bin/wait-for-it.sh
 RUN chmod u+s /usr/local/bin/wait-for-it.sh

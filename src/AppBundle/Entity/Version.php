@@ -43,12 +43,6 @@ class Version
     protected $deployedAt;
 
     /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    protected $rolledBackAt;
-
-    /**
      * @var User
      * @ORM\ManyToOne(targetEntity="User", inversedBy="deployedVersions", fetch="EAGER")
      * @ORM\JoinColumn(nullable=true)
@@ -56,19 +50,11 @@ class Version
     protected $deployedBy;
 
     /**
-     * @var User
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="rolledBackVersions", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    protected $rolledBackBy;
-
-    /**
      * @var Environment
      * @ORM\ManyToOne(targetEntity="Environment", inversedBy="versions")
      * @ORM\JoinColumn(nullable=false)
      */
     protected $environment;
-
 
     //</editor-fold>
 
@@ -114,27 +100,11 @@ class Version
     }
 
     /**
-     * @return \DateTime|null
-     */
-    public function getRolledBackAt(): ?\DateTime
-    {
-        return $this->rolledBackAt;
-    }
-
-    /**
      * @return User
      */
     public function getDeployedBy(): ?User
     {
         return $this->deployedBy;
-    }
-
-    /**
-     * @return User
-     */
-    public function getRolledBackBy(): ?User
-    {
-        return $this->rolledBackBy;
     }
 
     /**
@@ -184,11 +154,11 @@ class Version
     }
 
     /**
-     * @param \DateTime $deployedAt
+     * @param \DateTime|null $deployedAt
      *
      * @return Version
      */
-    public function setDeployedAt(\DateTime $deployedAt): Version
+    public function setDeployedAt(?\DateTime $deployedAt): Version
     {
         $this->deployedAt = $deployedAt;
 
@@ -196,37 +166,13 @@ class Version
     }
 
     /**
-     * @param \DateTime $rolledBackAt
+     * @param User|null $deployedBy
      *
      * @return Version
      */
-    public function setRolledBackAt(\DateTime $rolledBackAt): Version
-    {
-        $this->rolledBackAt = $rolledBackAt;
-
-        return $this;
-    }
-
-    /**
-     * @param User $deployedBy
-     *
-     * @return Version
-     */
-    public function setDeployedBy(User $deployedBy): Version
+    public function setDeployedBy(?User $deployedBy): Version
     {
         $this->deployedBy = $deployedBy;
-
-        return $this;
-    }
-
-    /**
-     * @param User $rolledBackBy
-     *
-     * @return Version
-     */
-    public function setRolledBackBy(User $rolledBackBy): Version
-    {
-        $this->rolledBackBy = $rolledBackBy;
 
         return $this;
     }
@@ -242,6 +188,7 @@ class Version
 
         return $this;
     }
+
     //</editor-fold>
 
     public function __toString()

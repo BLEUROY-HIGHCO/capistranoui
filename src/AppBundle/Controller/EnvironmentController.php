@@ -8,6 +8,7 @@ use AppBundle\Github\ApiClient;
 use AppBundle\Security\Voter\DeployVoter;
 use AppBundle\Socket\Message;
 use AppBundle\Socket\Sender;
+use AppBundle\Socket\Socket;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -17,6 +18,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -24,6 +27,8 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class EnvironmentController extends Controller
 {
+    const TOKEN_ID = 'jliSYMZuGytT19FU';
+
     /**
      * @Route("/show/{id}", requirements={"id": "\d+"}, name="environment_show")
      * @Template()
@@ -136,23 +141,13 @@ class EnvironmentController extends Controller
      *
      * @return Response|\Symfony\Component\Security\Core\Exception\AccessDeniedException
      */
-    public function deployAction(Request $request, SerializerInterface $serializer, Environment $environment)
+    public function deployAction(Request $request, Environment $environment)
     {
         if ($this->get('security.authorization_checker')->isGranted(DeployVoter::DEPLOY, $environment)) {
             $form = $this->getForm($environment);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $branch      = $form->get('branch')->getData();
-                $message     = (new Message())
-                    ->setAction('deploy')
-                    ->setBranch($branch)
-                    ->setEnvId($environment->getId())
-                    ->setToken('TOTO')
-                    ->setUsername($this->getUser()->getUsername());
-
-                $this->get(Sender::class)->sendMessage($serializer->serialize($message, 'json'));
-
-                return new Response('');
+                return new Response();
             } else {
                 throw new BadRequestHttpException('Invalid form');
             }
@@ -163,24 +158,26 @@ class EnvironmentController extends Controller
 
     /**
      * @Route(
-     *     "/rollback/{id}",
+     *     "/rollback/{id}/{token}",
      *     requirements={"id": "\d+"},
      *     methods={"GET"},
-     *     name="environment_rollback"
+     *     name="environment_rollback",
+     *     options={"expose": true}
      * )
      *
-     * @param Request $request
-     * @param Version $version
+     * @param Version             $version
+     *
+     * @param string              $token
      *
      * @return Response|\Symfony\Component\Security\Core\Exception\AccessDeniedException
      */
-    public
-    function rollbackAction(
-        Request $request, Version $version
-    ) {
-        if ($this->get('security.authorization_checker')->isGranted(DeployVoter::DEPLOY, $version->getEnvironment())) {
+    public function rollbackAction(Version $version, string $token)
+    {
+        $environment = $version->getEnvironment();
+        if ($this->isCsrfTokenValid(self::TOKEN_ID, $token) && $this->get('security.authorization_checker')->isGranted(DeployVoter::DEPLOY, $environment)) {
+            return new Response();
+        } else {
+            throw new BadRequestHttpException('Invalid token');
         }
-
-        throw $this->createAccessDeniedException();
     }
 }

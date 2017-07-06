@@ -19,7 +19,7 @@ class CapistranoFinder
     /**
      * @var string
      */
-    protected $rootPath;
+    protected $capistranoPath;
 
     protected $configFileContent = [];
 
@@ -28,10 +28,10 @@ class CapistranoFinder
      */
     protected $entityManager;
 
-    function __construct(EntityManager $entityManager, string $rootPath)
+    function __construct(EntityManager $entityManager, string $capistranoPath)
     {
         $this->entityManager = $entityManager;
-        $this->rootPath      = $rootPath;
+        $this->capistranoPath      = $capistranoPath;
     }
 
     /**
@@ -44,7 +44,7 @@ class CapistranoFinder
         $finder = new Finder();
         $dirs   = [];
         /** @var SplFileInfo $dir */
-        foreach ($finder->directories()->depth('== 0')->in($this->rootPath) as $dir) {
+        foreach ($finder->directories()->depth('== 0')->in($this->capistranoPath) as $dir) {
             if (!in_array($dir->getRelativePathname(), $existingFolders, true)) {
                 $dirs[] = $dir->getRelativePathname();
             }
@@ -59,9 +59,9 @@ class CapistranoFinder
     private function setGithub(Project $project)
     {
         $content = $this->getConfigFileContent($project->getFolder());
-        if (preg_match('/:repo_url, "git@github\.com:(.+)\/(.+)\.git"/', $content, $matches)) {
-            $project->setGithubOwner($matches[1]);
-            $project->setGithubProject($matches[2]);
+        if (preg_match('/:repo_url, ("|\')(git@|https:\/\/)github\.com(:|\/)(.+)\/(.+)\.git\1/', $content, $matches)) {
+            $project->setGithubOwner($matches[4]);
+            $project->setGithubProject($matches[5]);
         }
     }
 
@@ -114,7 +114,7 @@ class CapistranoFinder
 
         try {
             /** @var SplFileInfo $file */
-            foreach ($finder->files()->in("$this->rootPath/$projectName/config/deploy") as $file) {
+            foreach ($finder->files()->in("$this->capistranoPath/$projectName/config/deploy") as $file) {
                 preg_match('/(.*)\.rb/', $file->getRelativePathname(), $matches);
                 if (count($matches) === 2) {
                     $environments[$matches[1]] = $file;
@@ -176,7 +176,7 @@ class CapistranoFinder
     private function getConfigFileContent(string $folderName)
     {
         if (!isset($this->configFileContent[$folderName])) {
-            $deployFile = sprintf("%s/%s/config/deploy.rb", $this->rootPath, $folderName);
+            $deployFile = sprintf("%s/%s/config/deploy.rb", $this->capistranoPath, $folderName);
             if (!file_exists($deployFile)) {
                 throw new NotFoundHttpException();
             }
@@ -204,9 +204,7 @@ class CapistranoFinder
             $defaultEnvConfig['defaultBranch'] = $matches[2];
         }
 
-        if (preg_match('/:branch, ENV\[\'branch\'\]/', $contentFile, $matches)) {
-            $defaultEnvConfig['branchSelectable'] = true;
-        }
+        $defaultEnvConfig['branchSelectable'] = preg_match('/:branch, ENV\[\'branch\'\]/', $contentFile);
 
         return $defaultEnvConfig;
     }

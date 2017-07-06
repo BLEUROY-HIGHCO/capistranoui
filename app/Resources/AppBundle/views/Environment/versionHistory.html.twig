@@ -8,8 +8,17 @@
                 <span style="padding: 10px">Commit: <a href="{{ version.commitUrl }}" target="_blank">{{ version.commit }}</a></span>
                 <span style="padding: 10px">By: {{ version.deployedBy.username }}</span>
                 <span style="padding: 10px">At: {{ version.deployedAt | date }}</span>
-                {% if loop.index < environment.keepReleases and version.rolledbackAt is null %}
-                    <span style="padding: 10px"><button class="btn btn-sm btn-danger" title="Rollback"><i class="fa fa-backward" aria-hidden="true"></i></button></span>
+                {% if loop.index > 1 and loop.index < environment.keepReleases %}
+                    <span style="padding: 10px">
+                        <button
+                                class="btn btn-sm btn-danger btn-rollback"
+                                title="Rollback"
+                                data-id="{{ version.id }}"
+                                data-token="{{ csrf_token(constant("AppBundle\\Controller\\EnvironmentController::TOKEN_ID")) }}"
+                        >
+                            <i class="fa fa-backward" aria-hidden="true"></i>
+                        </button>
+                    </span>
                 {% endif %}
             </li>
         {% endfor %}

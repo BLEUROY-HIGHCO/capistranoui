@@ -67,7 +67,7 @@ class FlushableStreamHandler extends AbstractProcessingHandler
         } else {
             throw new \InvalidArgumentException('A record must contain a envId.');
         }
-        if (!is_resource($this->streams[$envId])) {
+        if (!isset($this->streams[$envId]) || !is_resource($this->streams[$envId])) {
             $path = sprintf(sprintf('%s/%s.log', $this->baseUrl, $envId));
             $this->createDir();
             $this->errorMessage = null;
