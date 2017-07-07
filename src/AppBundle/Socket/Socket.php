@@ -2,17 +2,12 @@
 
 namespace AppBundle\Socket;
 
-use AppBundle\Entity\Environment;
-use AppBundle\Entity\User;
-use AppBundle\Entity\Version;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Logger;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Serializer\Encoder\JsonDecode;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -30,21 +25,6 @@ class Socket implements MessageComponentInterface
      * @var ArrayCollection
      */
     protected $environments;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $entityManager;
-
-    /**
-     * @var string
-     */
-    protected $capistranoPath;
-
-    /**
-     * @var string
-     */
-    protected $capistranoBin;
 
     /**
      * @var EngineInterface
@@ -69,20 +49,14 @@ class Socket implements MessageComponentInterface
     /**
      * Socket constructor.
      *
-     * @param EntityManagerInterface $entityManager
      * @param ValidatorInterface     $validator
      * @param Logger                 $logger
      * @param EngineInterface        $template
-     * @param string                 $capistranoPath
-     * @param string                 $capistranoBin
      */
-    public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator, Logger $logger, EngineInterface $template, string $capistranoPath, string $capistranoBin)
+    public function __construct(ValidatorInterface $validator, Logger $logger, EngineInterface $template)
     {
         $this->environments   = new ArrayCollection();
-        $this->entityManager  = $entityManager;
         $this->validator      = $validator;
-        $this->capistranoPath = $capistranoPath;
-        $this->capistranoBin  = $capistranoBin;
         $this->serializer     = new Serializer([new ObjectNormalizer()], [new JsonDecode()]);
         $this->logger         = $logger;
         $this->template       = $template;
@@ -180,98 +154,6 @@ class Socket implements MessageComponentInterface
             $from->send($this->template->render('AppBundle:Socket:printLog.html.twig', ['line' => $line, 'type' => 'notice']));
         }
     }
-
-//    private function deploy(ConnectionInterface $from, Message $message)
-//    {
-//        /** @var Environment $environment */
-//        $environment = $this->entityManager->getRepository(Environment::class)->find($message->getEnvId());
-//        if (null === $environment) {
-//            throw new InvalidEnvironmentException();
-//        }
-//
-//        $username = $message->getUsername();
-//        /** @var User $user */
-//        $user = $this->entityManager->getRepository(User::class)->findOneByUsername($username);
-//        if (null === $user) {
-//            throw new InvalidUserException();
-//        }
-//
-//        $this->runProcess($environment, [$environment->getName(), 'deploy', sprintf('branch=%s', $message->getBranch()), sprintf('deployer=%s', $username)], self::TYPE_DEPL0Y, $user, $message->getBranch());
-//    }
-//
-//    private function rollback(ConnectionInterface $from, Message $message)
-//    {
-//        /** @var Version $version */
-//        $version = $this->entityManager->getRepository(Version::class)->find($message->getVersionId());
-//        if (null === $version) {
-//            throw new InvalidVersionException();
-//        }
-//
-//        $username = $message->getUsername();
-//        /** @var User $user */
-//        $user = $this->entityManager->getRepository(User::class)->findOneByUsername($username);
-//        if (null === $user) {
-//            throw new InvalidUserException();
-//        }
-//
-//        $this->runProcess($version->getEnvironment(), [$version->getEnvironment()->getName(), 'deploy:rollback', sprintf('deployer=%s', $username)], self::TYPE_ROLLBACK, $user, null, $version);
-//    }
-//
-//    /**
-//     * @param Environment  $environment
-//     * @param array        $arguments
-//     * @param string       $deployType
-//     * @param User         $user
-//     * @param string|null  $branch
-//     * @param Version|null $version
-//     */
-//    private function runProcess(Environment $environment, array $arguments, string $deployType, User $user, string $branch = null, Version $version = null)
-//    {
-//        $process = (new ProcessBuilder())
-//            ->setWorkingDirectory(sprintf('%s/%s', $this->capistranoPath, $environment->getProject()->getFolder()))
-//            ->setPrefix($this->capistranoBin)
-//            ->setArguments(array_merge(['exec', 'cap'], $arguments))
-//            ->getProcess()
-//            ->setTimeout(null);
-//
-//        $that          = $this;
-//        $versionNumber = null;
-//        $commit        = null;
-//
-//        $exitCode = $process->run(function ($type, $buffer) use ($that, $environment, $branch, &$versionNumber, &$commit) {
-//            $logType = $that::TYPE_NOTICE;
-//            if (Process::ERR === $type) {
-//                $logType = $that::TYPE_ERROR;
-//            }
-//            $that->broadcastMessage($environment->getId(), $buffer, $logType);
-//            if (preg_match('/releases\/([0-9]+)/', $buffer, $matches)) {
-//                $versionNumber = $matches[1];
-//            }
-//
-//            if (null !== $branch && preg_match(sprintf('/Branch %s \(at ([a-zA-Z0-9]+)\)/', $branch), $buffer, $matches)) {
-//                $commit = $matches[1];
-//            }
-//        });
-//
-//        if ($exitCode === 0) {
-//            $newVersion = new Version();
-//            $environment->setCurrentVersion($newVersion);
-//            $environment->addVersion($newVersion);
-//            $newVersion->setDeployedBy($user);
-//            $newVersion->setDeployedAt(new \DateTime());
-//            $newVersion->setNumber($versionNumber);
-//            if ($deployType === self::TYPE_ROLLBACK) {
-//                $newVersion->setCommit($version->getCommit());
-//                $newVersion->setBranch($version->getBranch());
-//            } elseif ($deployType === self::TYPE_DEPL0Y) {
-//                $newVersion->setCommit($commit);
-//                $newVersion->setBranch($branch);
-//            }
-//
-//            $this->entityManager->persist($newVersion);
-//            $this->entityManager->flush();
-//        }
-//    }
 
     /**
      * @param int    $envId

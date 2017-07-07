@@ -92,14 +92,13 @@ class TerminateListener
      */
     private function runProcess(Environment $environment, array $arguments, string $deployType, User $user, string $branch = null, Version $version = null)
     {
+        $args    = 'eval "$(ssh-agent -s)" && ssh-add /var/www/.ssh/github_rsa && '.implode(" ", array_merge([$this->capistranoBin, 'exec', 'cap'], $arguments));
         $process = (new ProcessBuilder())
             ->setWorkingDirectory(sprintf('%s/%s', $this->capistranoPath, $environment->getProject()->getFolder()))
-            ->setPrefix($this->capistranoBin)
-            ->setArguments(array_merge(['exec', 'cap'], $arguments))
+            ->setPrefix('/bin/sh')
+            ->setArguments(['-c', $args])
             ->getProcess()
             ->setTimeout(null);
-
-        file_put_contents('/tmp/capistranoui.log.3', $process->getWorkingDirectory() . ' TEST ' . $process->getCommandLine());
 
         $versionNumber = null;
         $commit        = null;
@@ -112,7 +111,7 @@ class TerminateListener
             $logType = Socket::TYPE_NOTICE;
             if (Process::ERR === $type) {
                 $logType = Socket::TYPE_ERROR;
-                $err .= $buffer;
+                $err     .= $buffer;
             }
             $this->broadcastMessage($environment->getId(), $buffer, $logType);
             if (preg_match('/releases\/([0-9]+)/', $buffer, $matches)) {
@@ -123,8 +122,6 @@ class TerminateListener
                 $commit = $matches[1];
             }
         }
-
-        file_put_contents('/tmp/capistranoui.log', $err.' ERR '. $process->getExitCode());
 
         if ($process->getExitCode() === 0) {
             $newVersion = new Version();
@@ -149,7 +146,7 @@ class TerminateListener
     private function broadcastMessage(string $envId, string $buffer, string $logType)
     {
         $message = new Message();
-        $message->setEnvId($envId)->setAction('broadcast')->setMessage($buffer)->setLogType($logType);
+        $message->setEnvId($envId)->setAction('broadcast')->setMessage($buffer)->setLogType($logType)->setToken('token');
         $this->sender->sendMessage($this->serializer->serialize($message, 'json'));
     }
 }

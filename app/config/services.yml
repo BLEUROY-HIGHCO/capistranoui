@@ -51,12 +51,9 @@ services:
     AppBundle\Socket\Socket:
         public: true
         arguments:
-            - '@doctrine.orm.entity_manager'
             - '@validator'
             - '@logger'
             - '@templating'
-            - '%capistrano_path%'
-            - '%capistrano_bin%'
         tags:
             - { name: monolog.logger, channel: capistrano }
 
