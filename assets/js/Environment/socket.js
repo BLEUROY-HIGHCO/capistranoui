@@ -22,6 +22,7 @@ class Socket {
 
   appendMessage(message) {
     this.logger.html(this.logger.html() + message);
+    this.logger.scrollTop(this.logger.prop('scrollHeight'));
   }
 
   flushMessageHistory() {

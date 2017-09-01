@@ -2,11 +2,9 @@
 
 namespace AppBundle\Form;
 
-use AppBundle\Entity\Project;
 use AppBundle\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,20 +21,8 @@ class EnvironmentType extends AbstractType
                     'readonly' => true,
                 ],
             ])
-            ->add('currentVersion', TextType::class, [
-                'required' => false,
-                'attr'     => [
-                    'readonly' => true,
-                ],
-            ])
             ->add('keepReleases', NumberType::class, [
                 'required' => true,
-                'attr'     => [
-                    'readonly' => true,
-                ],
-            ])
-            ->add('branchSelectable', CheckboxType::class, [
-                'required' => false,
                 'attr'     => [
                     'readonly' => true,
                 ],
@@ -48,9 +34,10 @@ class EnvironmentType extends AbstractType
                 ],
             ])
             ->add('users', EntityType::class, [
-                'class'    => User::class,
-                'required' => false,
-                'multiple' => true,
+                'class'       => User::class,
+                'placeholder' => 'Choose users allowed to deploy',
+                'required'    => false,
+                'multiple'    => true,
             ]);
     }
 

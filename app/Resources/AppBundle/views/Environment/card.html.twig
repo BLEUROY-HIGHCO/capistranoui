@@ -1,27 +1,22 @@
-<div class="col-md-6 col-xs-12">
+<div class="col-md-4 col-sm-6 col-xs-12">
     <div class="card">
-        <div class="card-block">
-            <img class="card-img-top" src="https://dummyimage.com/600x300/ccc/fff.png&text={{ environment.name | capitalize }}" alt="{{ environment.name }}" />
-            <h4 class="card-title">Branch : {{ environment.defaultBranch }}</h4>
+        <img class="img-fluid" src="https://dummyimage.com/600x300/ccc/fff.png&text={{ environment.name | capitalize }}" alt="{{ environment.name }}" />
+        <div class="card-body">
             <p class="card-text">
-                {% if environment.currentVersion %}
-                    {{ environment.currentVersion.number }}<br />
-                    {{ environment.currentVersion.commit }}<br />
-                    {% if environment.currentVersion.deployedAt and environment.currentVersion.deployedBy %}
-                        Deployed at {{ environment.currentVersion.deployedAt | date('d/m à H:i') }} by {{ environment.currentVersion.deployedBy.username }}<br />
-                    {% endif %}
-                {% endif %}
-                {% if is_granted('deploy', environment) %}
-            <div class="badge badge-success">
-                <span class="fa fa-check"></span>
-            </div>
-            {% else %}
-                <div class="badge badge-danger">
-                    <span class="fa fa-times"></span>
-                </div>
-            {% endif %}
+                <i class="fa fa-code-fork"></i> {{ environment.defaultBranch }}
             </p>
-            <a href="{{ path('environment_show', { 'id': environment.id }) }}" class="btn btn-primary">View</a>
+            {% if environment.currentVersion %}
+                <p class="card-text">
+                    <i class="fa fa-clock-o"></i> {{ environment.currentVersion.number }}<br/>
+                    <i class="fa fa-github-alt"></i> {{ environment.currentVersion.commit }}<br/>
+                {% if environment.currentVersion.deployedAt and environment.currentVersion.deployedBy %}
+                        <i class="fa fa-user"></i> {{ environment.currentVersion.deployedAt | date('d/m à H:i') }} by {{ environment.currentVersion.deployedBy.username }}
+                    </p>
+                {% endif %}
+            {% endif %}
+            <div class="text-center">
+                <a href="{{ path('environment_show', { 'id': environment.id }) }}" class="btn btn-primary{% if not is_granted('deploy', environment) %} disabled{% endif %}" role="button">Access</a>
+            </div>
         </div>
     </div>
 </div>

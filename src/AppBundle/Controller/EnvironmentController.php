@@ -6,9 +6,6 @@ use AppBundle\Entity\Environment;
 use AppBundle\Entity\Version;
 use AppBundle\Github\ApiClient;
 use AppBundle\Security\Voter\DeployVoter;
-use AppBundle\Socket\Message;
-use AppBundle\Socket\Sender;
-use AppBundle\Socket\Socket;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -18,9 +15,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\ProcessBuilder;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("environment")
@@ -147,10 +141,9 @@ class EnvironmentController extends Controller
             $form = $this->getForm($environment);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                return new Response();
-            } else {
-                throw new BadRequestHttpException('Invalid form');
+                return new Response('Deploy launch');
             }
+            throw new BadRequestHttpException('Invalid form');
         }
 
         throw $this->createAccessDeniedException();
@@ -176,8 +169,7 @@ class EnvironmentController extends Controller
         $environment = $version->getEnvironment();
         if ($this->isCsrfTokenValid(self::TOKEN_ID, $token) && $this->get('security.authorization_checker')->isGranted(DeployVoter::DEPLOY, $environment)) {
             return new Response();
-        } else {
-            throw new BadRequestHttpException('Invalid token');
         }
+        throw new BadRequestHttpException('Invalid token');
     }
 }

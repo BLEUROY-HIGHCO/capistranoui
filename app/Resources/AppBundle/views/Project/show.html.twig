@@ -1,15 +1,29 @@
 {% extends 'AppBundle::base.html.twig' %}
 
 {% block body %}
-    <h2>{{ project.name }} {{ project.name != project.folder ? '(' ~ project.folder ~ ')' }}</h2>
-    <a href="{{ project.githubUrl }}" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
-    {% if is_granted("ROLE_ADMIN") %}
-        <a class="btn btn-sm btn-primary" href="{{ path('project_edit', { 'id': project.id }) }}">Edit</a>
-    {% endif %}
-
-    <div class="row">
-        {% for environment in project.environments %}
-            {{ include('@App/Environment/card.html.twig', {'environment': environment}) }}
-        {% endfor %}
-    </div>
+    <section>
+        <div class="card card-cascade narrower">
+            <div class="view gradient-card-header peach-gradient text-center">
+                <h2 class="h2-responsive">{{ project.name }}</h2>
+                <p>{{ (project.name != project.folder ? '<i class="fa fa-folder-o"></i> ' ~ project.folder) | raw }}</p>
+                <div class="text-center">
+                    <a type="button" class="btn-floating btn-small waves-effect waves-light" href="{{ project.githubUrl }}" target="_blank">
+                        <i class="fa fa-github"></i>
+                    </a>
+                    {% if is_granted("ROLE_ADMIN") %}
+                        <a type="button" class="btn-floating btn-small waves-effect waves-light" href="{{ path('project_edit', { 'id': project.id }) }}">
+                            <i class=" fa fa-pencil"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row justify-content-around">
+                    {% for environment in project.environments %}
+                        {{ include('@App/Environment/card.html.twig', {'environment': environment}) }}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}

@@ -1,9 +1,0 @@
-source "https://rubygems.org"
-
-gem 'capistrano', github: 'capistrano/capistrano', branch: 'master'
-gem 'capistrano-symfony', '~> 1.0.0.rc2'
-gem 'capistrano-gulp', '~> 0.0.2'
-gem 'capistrano-composer'
-gem 'capistrano-npm'
-gem 'capistrano-yarn'
-gem 'slackistrano', github: 'BLEUROY-HIGHCO/slackistrano', branch: 'master'

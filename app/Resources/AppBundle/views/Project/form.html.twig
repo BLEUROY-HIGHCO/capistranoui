@@ -1,6 +1,38 @@
 {% extends 'AppBundle::base.html.twig' %}
 
+{% form_theme form with [_self, 'AppBundle::form-theme.html.twig'] %}
+
 {% block body %}
-    {{ form(form) }}
+    {{ form_start(form) }}
+    <div class="container-fluid">
+        <section class="section card mb-5">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 col-xs-12">
+                        {{ form_row(form.name) }}
+                        {{ form_row(form.folder) }}
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                        {{ form_row(form.githubOwner) }}
+                        {{ form_row(form.githubProject) }}
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    {{ form_end(form) }}
 {% endblock %}
 
+{% block _project_environments_row %}
+    <div class="row">
+        {% for child in form %}
+            <div class="col-md-6 col-xs-12">
+                <section class="section card mb-5">
+                    <div class="card-body ">
+                        {{ form_widget(child) }}
+                    </div>
+                </section>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -8,6 +8,9 @@ Encore
   .enableSassLoader()
   .addStyleEntry('show', './assets/scss/Environment/show.scss')
   .addEntry('environment', './assets/js/Environment/environment.js')
+  .addEntry('main', './assets/js/main.js')
+  .addEntry('common', './assets/scss/common.scss')
+  .addEntry('security/login', './assets/scss/Security/login.scss')
   .enableSourceMaps(!Encore.isProduction())
   .enableVersioning()
 ;

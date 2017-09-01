@@ -1,9 +1,11 @@
-<ul class="list-group">
+<li class="add-project">
+    <a href="{{ path('project_select_folder') }}" class="collapsible-header waves-effect"><i class="fa fa-plus-circle"></i> New project</a>
+</li>
 {% for project in projects %}
-    <li class="list-group-item {{ currentProject is not empty and currentProject.id == project.id ? 'active' : '' }}">
-        <a href="{{ path('project_show', { 'id': project.id }) }}">{{ project }}</a>
+    <li class="{{ currentProject is not empty and currentProject.id == project.id ? 'active' : '' }}">
+        {% if project.thumb %}
+            <img src="{{ project.thumb }}" />
+        {% endif %}
+        <a href="{{ path('project_show', { 'id': project.id }) }}" class="collapsible-header waves-effect">{{ project }}</a>
     </li>
 {% endfor %}
-</ul>
-
-<a href="{{ path('project_select_folder') }}" class="btn btn-primary btn-sm">New project</a>

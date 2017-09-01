@@ -19,3 +19,6 @@
 /app/docker/php/capistrano/*/log
 /node_modules
 /web/images/projects/*
+/web/build/*
+!/web/build/.gitkeep
+

@@ -1,9 +1,19 @@
 <div class="card">
-    <div class="card-block">
-        <h4 class="card-title">Github</h4>
-        <p class="card-text">ID: <a href="{{ commit.commit.html_url }}" target="_blank" class="card-link">{{ commit.commit.sha }}</a></p>
-        <p class="card-text">{{ commit.commit.commit.message }}</p>
-        <p class="card-text">By {{ commit.commit.commit.author.name }}</p>
-        <p class="card-text">At {{ commit.commit.commit.author.date | date }}</p>
+    <div class="card-header deep-orange lighten-1 white-text">
+        <i class="fa fa-github"></i> Github
+    </div>
+    <div class="card-body">
+        <p class="card-text">
+            <i class="fa fa-id-card"></i> <a href="{{ commit.commit.html_url }}" target="_blank">{{ commit.commit.sha }}</a>
+        </p>
+        <p class="card-text text-nowrap text-truncate" title="{{ commit.commit.commit.message }}">
+            <i class="fa fa-comment"></i> {{ commit.commit.commit.message }}
+        </p>
+        <p class="card-text">
+            <i class="fa fa-user"></i> {{ commit.commit.commit.author.name }}
+        </p>
+        <p class="card-text">
+            <i class="fa fa-clock-o"></i> {{ commit.commit.commit.author.date | date('d/m à H:i') }}
+        </p>
     </div>
 </div>

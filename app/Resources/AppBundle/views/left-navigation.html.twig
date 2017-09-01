@@ -1,0 +1,22 @@
+<!-- Sidebar navigation -->
+<ul id="slide-out" class="side-nav fixed sn-bg-1 custom-scrollbar">
+    <!-- Logo -->
+    <li class="logo-sn waves-effect">
+        <div class=" text-center">
+            <a href="{{ path('dashboard') }}" class="pl-0"><img src="{{ asset('img/logo.png') }}" class=""></a>
+        </div>
+    </li>
+    <!--/. Logo -->
+
+    <!-- Side navigation links -->
+    <li>
+        <ul class="collapsible collapsible-accordion">
+            {{ render(controller('AppBundle:Project:list')) }}
+        </ul>
+    </li>
+    <!--/. Side navigation links -->
+    <div class="sidenav-bg mask-strong"></div>
+</ul>
+<!--/. Sidebar navigation -->
+
+

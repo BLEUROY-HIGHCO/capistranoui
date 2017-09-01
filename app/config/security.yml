@@ -14,11 +14,14 @@ security:
     firewalls:
         main:
             pattern: ^/
+            provider: fos_userbundle
             form_login:
-                provider: fos_userbundle
                 csrf_token_generator: security.csrf.token_manager
+                login_path: login
+                check_path: login_check
             logout:
-                target: /project
+                path: logout
+                target: /login
             anonymous:    true
 
         dev:

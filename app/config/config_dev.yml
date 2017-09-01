@@ -32,3 +32,10 @@ monolog:
             type: service
             id: AppBundle\Log\Handler\FlushableStreamHandler
             channels: ['capistrano']
+
+doctrine:
+    dbal:
+        driver: pdo_sqlite
+        dbname: '%database_name%'
+        charset: UTF8
+        path: '%kernel.project_dir%/var/data/data.sqlite'

@@ -1,27 +1,39 @@
-<div class="col-md-12 col-sm-12">
-    <div class="card">
-        <h4 class="card-title">History</h4>
-        <ul class="list-group list-group-flush">
-        {% for version in environment.versions|slice(0, environment.keepReleases*2) %}
-            <li class="list-group-item">
-                <span style="padding: 10px">Number: {{ version.number }}</span>
-                <span style="padding: 10px">Commit: <a href="{{ version.commitUrl }}" target="_blank">{{ version.commit }}</a></span>
-                <span style="padding: 10px">By: {{ version.deployedBy.username }}</span>
-                <span style="padding: 10px">At: {{ version.deployedAt | date }}</span>
-                {% if loop.index > 1 and loop.index < environment.keepReleases %}
-                    <span style="padding: 10px">
-                        <button
-                                class="btn btn-sm btn-danger btn-rollback"
-                                title="Rollback"
-                                data-id="{{ version.id }}"
-                                data-token="{{ csrf_token(constant("AppBundle\\Controller\\EnvironmentController::TOKEN_ID")) }}"
-                        >
-                            <i class="fa fa-backward" aria-hidden="true"></i>
-                        </button>
-                    </span>
-                {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
+<div class="card">
+    <div class="card-header deep-orange lighten-1 white-text">
+        <i class="fa fa-calendar"></i> History
+    </div>
+    <div class="card-body pre-scrollable">
+        <div class="row">
+            {% for version in environment.versions|slice(0, environment.keepReleases*2) %}
+                <div class="col-sm-6 mb-3">
+                    <div class="card">
+                        <div class="card-header primary-color white-text"><i class="fa fa-list-alt"></i> {{ version.number }}</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p class="card-text">
+                                        <i class="fa fa-user"></i> {{ version.deployedBy.username }}<br />
+                                        <i class="fa fa-clock-o"></i> {{ version.deployedAt | date('d/m à H:i') }}<br/>
+                                        <i class="fa fa-code-fork"></i> <a href="{{ version.commitUrl }}" target="_blank" title="{{ version.commit }}">{{ version.commit | slice(0, 7) }}</a>
+                                    </p>
+                                </div>
+                                <div class="col-sm-6">
+                                    {% if loop.index > 1 and loop.index <= environment.keepReleases %}
+                                        <button
+                                                class="btn btn-sm btn-danger btn-rollback"
+                                                title="Rollback"
+                                                data-id="{{ version.id }}"
+                                                data-token="{{ csrf_token(constant("AppBundle\\Controller\\EnvironmentController::TOKEN_ID")) }}"
+                                        >
+                                            <i class="fa fa-backward" aria-hidden="true"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </div>

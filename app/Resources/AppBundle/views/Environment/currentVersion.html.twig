@@ -1,12 +1,21 @@
 <div class="card">
-    <div class="card-block">
-        <h4 class="card-title">Current</h4>
+    <div class="card-header deep-orange lighten-1 white-text">
+        <i class="fa fa-arrow-down"></i> Deployed
+    </div>
+    <div class="card-body">
         {% if version is not null %}
-            <p class="card-text">ID: <a href="{{ version.commitUrl }}" target="_blank">{{ version.commit }}</a></p>
-            <p class="card-text">Number: {{ version.number }}</p>
-            <p class="card-text">By {{ version.deployedBy.username }}</p>
-            <p class="card-text">At {{ version.deployedAt | date }}</p>
-            <p class="card-text">Branch: {{ version.branch }}</p>
+            <p class="card-text">
+                <i class="fa fa-id-card"></i> <a href="{{ version.commitUrl }}" target="_blank">{{ version.commit }}</a> on <i class="fa fa-code-fork"></i> {{ version.branch }}
+            </p>
+            <p class="card-text">
+                <i class="fa fa-list-alt"></i> {{ version.number }}
+            </p>
+            <p class="card-text">
+                <i class="fa fa-user"></i> {{ version.deployedBy.username }}
+            </p>
+            <p class="card-text">
+                <i class="fa fa-clock-o"></i> {{ version.deployedAt | date('d/m à H:i') }}
+            </p>
         {% else %}
             <p class="card-text">There is no current version.</p>
         {% endif %}

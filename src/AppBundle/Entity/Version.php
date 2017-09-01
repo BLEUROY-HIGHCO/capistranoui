@@ -26,7 +26,7 @@ class Version
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, name="`commit`")
      */
     protected $commit;
 
@@ -48,6 +48,13 @@ class Version
      * @ORM\JoinColumn(nullable=true)
      */
     protected $deployedBy;
+
+    /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="rolledBackVersions", fetch="EAGER")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    protected $rolledBackBy;
 
     /**
      * @var Environment
@@ -105,6 +112,14 @@ class Version
     public function getDeployedBy(): ?User
     {
         return $this->deployedBy;
+    }
+
+    /**
+     * @return User
+     */
+    public function getRolledBackBy(): ?User
+    {
+        return $this->rolledBackBy;
     }
 
     /**
@@ -173,6 +188,18 @@ class Version
     public function setDeployedBy(?User $deployedBy): Version
     {
         $this->deployedBy = $deployedBy;
+
+        return $this;
+    }
+
+    /**
+     * @param User|null $rolledBackBy
+     *
+     * @return Version
+     */
+    public function setRolledBackBy(?User $rolledBackBy): Version
+    {
+        $this->rolledBackBy = $rolledBackBy;
 
         return $this;
     }

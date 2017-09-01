@@ -3,7 +3,6 @@
 namespace AppBundle\Socket;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Logger;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
@@ -151,7 +150,11 @@ class Socket implements MessageComponentInterface
     private function sendFileToClient(ConnectionInterface $from, string $content)
     {
         foreach (explode("\n", $content) as $line) {
-            $from->send($this->template->render('AppBundle:Socket:printLog.html.twig', ['line' => $line, 'type' => 'notice']));
+            $matches = [];
+            if (preg_match('/\[.*\] capistrano\.(?<level>[A-Z]*):\s(?<message>.*)\s{"env":\d}\s\[\]/', $line, $matches)) {
+                $type = in_array($matches['level'], ['INFO', 'NOTICE'], true) ? 'notice' : 'error';
+                $from->send($this->template->render('AppBundle:Socket:printLog.html.twig', ['line' => $matches['message'], 'type' => $type]));
+            }
         }
     }
 

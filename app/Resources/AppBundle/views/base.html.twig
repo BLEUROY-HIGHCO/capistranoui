@@ -1,47 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
     <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>{% block title %}CapistranoUI by HCS{% endblock %}</title>
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+        <!-- Material Design Bootstrap -->
+        <link rel="stylesheet" href="{{ asset('css/mdb.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('build/common.css') }}">
         {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-        <link rel="stylesheet" href="{{ asset('css/now-ui-kit.css') }}">
     </head>
-    <body>
-        <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand" href="#">Capistrano UI</a>
-
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('fos_user_security_logout') }}">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-3">
-                    {{ render(controller('AppBundle:Project:list')) }}
+    <body class="fixed-sn grey-skin">
+        <header>
+            {% include 'AppBundle::left-navigation.html.twig' %}
+            <!-- Navbar -->
+            <nav class="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav">
+                <!-- SideNav slide-out button -->
+                <div class="float-left">
+                    <a href="#" data-activates="slide-out" class="button-collapse black-text"><i class="fa fa-bars"></i></a>
                 </div>
-                <div class="col-md-9">
-                    {% block body %}{% endblock %}
+                <!-- Breadcrumb-->
+                <div class="breadcrumb-dn mr-auto">
+                    <p>{% block breadcrumb %}{% endblock %}</p>
                 </div>
-            </div>
-        </div>
 
-        <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+                {% include 'AppBundle::top-navigation.html.twig' %}
+            </nav>
+            <!-- /.Navbar -->
+        </header>
+        <main>
+            {% block body %}{% endblock %}
+        </main>
+
+        <script src="{{ asset('js/popper.min.js') }}"></script>
+        <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
         <script src="https://use.fontawesome.com/7ddabace19.js"></script>
-        <script src="{{ asset('js/now-ui-kit.js') }}"></script>
+        <script src="{{ asset('js/mdb.min.js') }}"></script>
         <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
         <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+        <script src="{{ asset('build/main.js') }}"></script>
 
         {% block javascripts %}{% endblock %}
     </body>

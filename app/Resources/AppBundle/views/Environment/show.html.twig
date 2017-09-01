@@ -4,30 +4,64 @@
     <link rel="stylesheet" href="{{ asset('build/show.css') }}">
 {% endblock %}
 
+{% form_theme form with ['AppBundle::form-theme.html.twig', _self] %}
+
 {% block body %}
-    <h2>{{ environment.project.name }} {{ environment.project.name != environment.project.folder ? '(' ~ environment.project.folder ~ ')' }} - {{ environment.name | capitalize }}</h2>
-    <a href="{{ environment.githubUrl }}" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
+    <section>
+        <div class="card card-cascade narrower">
+            <div class="view gradient-card-header blue-gradient text-center">
+                <h2 class="h2-responsive">{{ environment.project.name }}</h2>
+                <p>{{ environment.name | capitalize }}</p>
+                <p>{{ (environment.project.name != environment.project.folder ? '<i class="fa fa-folder-o"></i> ' ~ environment.project.folder) | raw }}</p>
+                <div class="text-center">
+                    <a type="button" class="btn-floating btn-small waves-effect waves-light" href="{{ environment.githubUrl }}" target="_blank">
+                        <i class="fa fa-github"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div id="githubLastCommit" class="col-sm-6 col-xs-12">
+                        {{ render(controller('AppBundle:Environment:githubLastCommit', { 'id': environment.id })) }}
+                    </div>
+                    <div class="col-sm-6 col-xs-12">
+                        {{ render(controller('AppBundle:Environment:currentVersion', { 'id': environment.id })) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-xs-12 col-sm-6">
+                        {{ render(controller('AppBundle:Environment:githubBranchCommits', { 'id': environment.id })) }}
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        {{ include('AppBundle:Environment:versionHistory.html.twig') }}
+                    </div>
+                </div>
+                <div class="row mb-3 justify-content-center">
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-header deep-orange lighten-1 white-text"><i class="fa fa-play"></i> Launch deploy</div>
+                            <div class="card-body">
+                                {{ form(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-12">
+                        <div id="socket-content"></div>
+                    </div>
+                </div>
 
-    <div class="row">
-        <div id="githubLastCommit" class="col-md-6 col-sm-12">
-            {{ render(controller('AppBundle:Environment:githubLastCommit', { 'id': environment.id })) }}
+            </div>
         </div>
-        <div class="col-md-6 col-sm-12">
-            {{ render(controller('AppBundle:Environment:currentVersion', { 'id': environment.id })) }}
-        </div>
-        <div id="githubBranchCommits" class="col-md-12 col-sm-12">
-            {{ render(controller('AppBundle:Environment:githubBranchCommits', { 'id': environment.id })) }}
-        </div>
-
-        <div class="col-sm-12">
-            <div id="socket-content"></div>
-        </div>
-
-        {{ include('AppBundle:Environment:versionHistory.html.twig') }}
-        {{ form(form) }}
-    </div>
-
+    </section>
 {% endblock %}
+
+{% block button_row -%}
+    <div class="form-group text-center">
+        {{- form_widget(form) -}}
+    </div>
+{%- endblock button_row %}
 
 {% block javascripts %}
     <script>

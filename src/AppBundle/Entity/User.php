@@ -176,4 +176,14 @@ class User extends BaseUser
     
     //</editor-fold>
 
+    /**
+     * User as string
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getUsername();
+    }
+
 }

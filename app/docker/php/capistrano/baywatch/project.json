@@ -1,9 +1,0 @@
-{
-    "envs": {
-        "production": [
-            "pmontoya",
-            "bjulia",
-            "loic"
-        ]
-    }
-}
